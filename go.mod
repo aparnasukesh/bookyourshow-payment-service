@@ -3,8 +3,9 @@ module github.com/aparnasukesh/payment-svc
 go 1.21.1
 
 require (
-	github.com/aparnasukesh/inter-communication v1.6.4
+	github.com/aparnasukesh/inter-communication v1.7.3
 	github.com/go-playground/validator v9.31.0+incompatible
+	github.com/razorpay/razorpay-go v1.3.2
 	github.com/spf13/viper v1.19.0
 	google.golang.org/grpc v1.64.0
 	gorm.io/driver/postgres v1.5.9

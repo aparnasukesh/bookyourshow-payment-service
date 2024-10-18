@@ -21,7 +21,7 @@ func InitResources(cfg config.Config) (func() error, error) {
 		return nil, err
 	}
 	repo := payment.NewRepository(db)
-	service := payment.NewService(repo, movieBookingClient)
+	service := payment.NewService(repo, movieBookingClient, cfg)
 	handler := payment.NewGrpcHandler(service)
 
 	server, err := boot.NewGrpcServer(cfg, handler)

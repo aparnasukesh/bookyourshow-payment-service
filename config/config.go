@@ -17,10 +17,12 @@ type Config struct {
 	GrpcNotificationPort        string `mapstructure:"GrpcNotificationPort" validate:"required"`
 	GrpcUserAdminServicePort    string `mapstructure:"GrpcUserAdminServicePort" validate:"required"`
 	GrpcMovieBookingServicePort string `mapstructure:"GrpcMovieBookingServicePort" validate:"required"`
+	RAZORPAY_KEY_ID             string `mapstructure:"RAZORPAY_KEY_ID" validate:"required"`
+	RAZORPAY_KEY_SECRET         string `mapstructure:"RAZORPAY_KEY_SECRET" validate:"required"`
 }
 
 var envs = []string{
-	"DBHOST", "DBNAME", "DBUSER", "DBPORT", "DBPASSWORD", "GRPCPORT", "GrpcNotificationPort", "GrpcUserAdminServicePort", "GrpcMovieBookingServicePort",
+	"DBHOST", "DBNAME", "DBUSER", "DBPORT", "DBPASSWORD", "GRPCPORT", "GrpcNotificationPort", "GrpcUserAdminServicePort", "GrpcMovieBookingServicePort", "RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET",
 }
 
 func LoadConfig() (Config, error) {
