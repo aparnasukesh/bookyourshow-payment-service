@@ -2,7 +2,6 @@ package payment
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -46,22 +45,6 @@ func (h *GrpcHandler) ProcessPayment(ctx context.Context, req *payment.ProcessPa
 		},
 	}, nil
 }
-func (h *GrpcHandler) HandleRazorpayWebhook(ctx context.Context, req *payment.HandleRazorpayWebhookRequest) (*payment.HandleRazorpayWebhookResponse, error) {
-	payload, err := json.Marshal(req.Payload)
-	if err != nil {
-		return nil, fmt.Errorf("error marshaling RazorpayPayload: %v", err)
-	}
-
-	err = h.svc.HandleRazorpayWebhook(ctx, payload)
-	if err != nil {
-		return nil, err
-	}
-
-	return &payment.HandleRazorpayWebhookResponse{
-		Message: "Webhook processed successfully",
-		Status:  "success",
-	}, nil
-}
 
 func (h *GrpcHandler) GetTransactionStatus(ctx context.Context, req *payment.GetTransactionStatusRequest) (*payment.GetTransactionStatusResponse, error) {
 	transaction, err := h.svc.GetTransactionStatus(ctx, req.TransactionId)
@@ -75,4 +58,28 @@ func (h *GrpcHandler) GetTransactionStatus(ctx context.Context, req *payment.Get
 		PaymentMethodId: int32(transaction.PaymentMethodID),
 		TransactionDate: transaction.TransactionDate.Format(time.RFC3339),
 	}, nil
+}
+
+func (h *GrpcHandler) PaymentSuccess(ctx context.Context, req *payment.PaymentSuccessRequest) (*payment.PaymentSuccessResponse, error) {
+	err := h.svc.PaymentSuccess(ctx, PaymentStatusRequest{
+		BookingID:         int(req.BookingId),
+		OrderID:           req.OrderId,
+		RazorpayPaymentID: req.RazorpayPaymentId,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+func (h *GrpcHandler) PaymentFailure(ctx context.Context, req *payment.PaymentFailureRequest) (*payment.PaymentFailureResponse, error) {
+	err := h.svc.PaymentFailure(ctx, PaymentStatusRequest{
+		BookingID:         int(req.BookingId),
+		OrderID:           req.OrderId,
+		RazorpayPaymentID: req.RazorpayPaymentId,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
 }
