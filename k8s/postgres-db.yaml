@@ -18,21 +18,21 @@ spec:
         - name: postgres-db
           image: postgres:latest
           ports:
-            - containerPort: 5432  # Port for PostgreSQL
+            - containerPort: 5432
           env:
             - name: POSTGRES_DB
-              value: "book_your_show_payment"  # Database name
+              value: book_your_show_payment
             - name: POSTGRES_USER
-              value: "postgres"  # Database user
+              value: postgres
             - name: POSTGRES_PASSWORD
-              value: "2585"  # Database password
+              value: 2585
           resources:
             requests:
               memory: "64Mi"
-              cpu: "250m"
+              cpu: "100m"   # Reduced from 250m
             limits:
-              memory: "512Mi"
-              cpu: "1"
+              memory: "128Mi"  # Reduced from 512Mi
+              cpu: "250m"   # Reduced from 1
 ---
 apiVersion: v1
 kind: Service
@@ -41,6 +41,7 @@ metadata:
   labels:
     app: postgres-db
 spec:
+  type: ClusterIP
   ports:
     - port: 5432
       targetPort: 5432
