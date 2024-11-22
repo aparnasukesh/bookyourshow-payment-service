@@ -28,8 +28,8 @@ spec:
               value: "2585"  # Database password
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "500m"
+              memory: "64Mi"
+              cpu: "250m"
             limits:
               memory: "512Mi"
               cpu: "1"
