@@ -34,7 +34,7 @@ metadata:
   labels:
     app: payment-svc
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - port: 5054
       targetPort: 5054

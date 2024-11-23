@@ -11,7 +11,8 @@ import (
 )
 
 func NewGrpcServer(config config.Config, paymentGrpcHandler payment.GrpcHandler) (func() error, error) {
-	lis, err := net.Listen("tcp", ":"+config.GrpcPort)
+	//lis, err := net.Listen("tcp", ":"+config.GrpcPort)
+	lis, err := net.Listen("tcp", "0.0.0.0:"+config.GrpcPort)
 	if err != nil {
 		return nil, err
 	}
