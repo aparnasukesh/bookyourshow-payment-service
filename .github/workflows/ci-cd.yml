@@ -69,3 +69,8 @@ jobs:
       - name: Apply Payment Service Kubernetes manifest
         run: |
           kubectl apply -f k8s/payment-svc.yaml
+
+      # Ensure deployment restarts to pick up new image
+      - name: Restart Payment Service Deployment
+        run: |
+          kubectl rollout restart deployment payment-svc
