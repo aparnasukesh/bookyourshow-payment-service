@@ -1,4 +1,80 @@
 
+# name: CI/CD Pipeline for Payment Service
+
+# on:
+#   push:
+#     branches:
+#       - master
+#   pull_request:
+#     branches:
+#       - master
+
+# jobs:
+#   build-and-push-docker:
+#     name: Build and Push Docker Image
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Check out the code
+#         uses: actions/checkout@v3
+
+#       - name: Log in to Docker Hub
+#         uses: docker/login-action@v2
+#         with:
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
+
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v2
+
+#       - name: Build and push Docker image for Payment Service
+#         run: |
+#           docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/payment-svc:latest -f Dockerfile --push .
+
+#   deploy-to-kubernetes:
+#     name: Deploy Payment Service to Kubernetes
+#     needs: build-and-push-docker
+#     runs-on: ubuntu-latest
+#     if: github.ref == 'refs/heads/master'
+
+#     steps:
+#       - name: Check out the code
+#         uses: actions/checkout@v3
+
+#       - name: Configure AWS credentials
+#         env:
+#           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#         run: |
+#           aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+#           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+#           aws configure set region ${{ secrets.AWS_REGION }}
+
+#       - name: Set up kubectl
+#         uses: azure/setup-kubectl@v3
+#         with:
+#           version: 'latest'
+
+#       - name: Configure kubectl for EKS
+#         run: |
+#           aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name bookyourshow
+
+#       - name: Debug - List Root Directory
+#         run: ls -R .
+
+#       - name: Apply Postgres Kubernetes manifest
+#         run: |
+#           kubectl apply -f k8s/postgres-db.yaml
+
+#       - name: Apply Payment Service Kubernetes manifest
+#         run: |
+#           kubectl apply -f k8s/payment-svc.yaml
+
+#       # Ensure deployment restarts to pick up new image
+#       - name: Restart Payment Service Deployment
+#         run: |
+#           kubectl rollout restart deployment payment-svc
+
 name: CI/CD Pipeline for Payment Service
 
 on:
@@ -62,15 +138,15 @@ jobs:
       - name: Debug - List Root Directory
         run: ls -R .
 
-      - name: Apply Postgres Kubernetes manifest
+      - name: Apply Postgres Kubernetes manifest in bookyourshow namespace
         run: |
-          kubectl apply -f k8s/postgres-db.yaml
+          kubectl apply -f k8s/postgres-db.yaml --namespace=bookyourshow
 
-      - name: Apply Payment Service Kubernetes manifest
+      - name: Apply Payment Service Kubernetes manifest in bookyourshow namespace
         run: |
-          kubectl apply -f k8s/payment-svc.yaml
+          kubectl apply -f k8s/payment-svc.yaml --namespace=bookyourshow
 
       # Ensure deployment restarts to pick up new image
       - name: Restart Payment Service Deployment
         run: |
-          kubectl rollout restart deployment payment-svc
+          kubectl rollout restart deployment payment-svc --namespace=bookyourshow

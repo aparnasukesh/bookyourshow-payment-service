@@ -1,7 +1,51 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: payment-svc
+#   labels:
+#     app: payment-svc
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: payment-svc
+#   template:
+#     metadata:
+#       labels:
+#         app: payment-svc
+#     spec:
+#       containers:
+#         - name: payment-svc
+#           image: aparnasukesh/payment-svc:latest
+#           ports:
+#             - containerPort: 5054
+#           resources:
+#             requests:
+#               memory: "64Mi"
+#               cpu: "100m"
+#             limits:
+#               memory: "128Mi"
+#               cpu: "250m"
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: payment-svc
+#   labels:
+#     app: payment-svc
+# spec:
+#   type: ClusterIP
+#   ports:
+#     - port: 5054
+#       targetPort: 5054
+#   selector:
+#     app: payment-svc
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: payment-svc
+  namespace: bookyourshow
   labels:
     app: payment-svc
 spec:
@@ -31,6 +75,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: payment-svc
+  namespace: bookyourshow
   labels:
     app: payment-svc
 spec:
